@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Slingshot : MonoBehaviour
 {
+    static public Slingshot S;
     //fields set in the unity inspection pane
     public GameObject prefabProjectile;
     public float velocityMult = 4.0f;
@@ -18,6 +19,8 @@ public class Slingshot : MonoBehaviour
     // Awake is called before the first frame update
     void Awake()
     {
+        //set the slingshot singleton
+        S = this;
         Transform launchPointTrans = transform.Find("LaunchPoint");
         launchPoint = launchPointTrans.gameObject;
         launchPoint.SetActive(false);
