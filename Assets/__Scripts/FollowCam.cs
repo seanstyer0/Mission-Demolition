@@ -41,6 +41,11 @@ public class FollowCam : MonoBehaviour
                 {
                     //return to default view
                     poi = null;
+                    if(MissionDemolition.S.shotsLeft == 0)
+                    {
+                        MissionDemolition.GameOver();
+                        MissionDemolition.S.Invoke("StartLevel", 5f);
+                    }
                     //in the next update
                     return;
                 }

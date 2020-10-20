@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,7 @@ public class MissionDemolition : MonoBehaviour
     public GameObject[] castles;    //an array of the castle prefabs
     public Text gtLevel;            //the UI element for level progress
     public Text gtScore;            //the UI element for score
+    public Text gameOver;           //the UI element to alert the player if they have lost the level
     public Vector3 castlePos;       //the place to put castles
 
     public bool ___________________;
@@ -41,10 +43,13 @@ public class MissionDemolition : MonoBehaviour
         StartLevel();
     }
 
-    void StartLevel()
+    public void StartLevel()
     {
+        //clear any leftover game over text
+        S.gameOver.text = "";
+
         //get rid of any old castle
-        if(castle != null)
+        if (castle != null)
         {
             Destroy(castle);
         }
@@ -118,18 +123,34 @@ public class MissionDemolition : MonoBehaviour
                 if(GUI.Button(buttonRect, "Show Castle"))
                 {
                     SwitchView("Castle");
+                    //make sure the player hasn't already lost
+                    if(S.shotsLeft == 0)
+                    {
+                        GameOver();
+                        Invoke("StartLevel", 5f);
+                    }
                 }
                 break;
             case "Castle":
                 if (GUI.Button(buttonRect, "Show Both"))
                 {
                     SwitchView("Both");
+                    if (S.shotsLeft == 0)
+                    {
+                        GameOver();
+                        Invoke("StartLevel", 5f);
+                    }
                 }
                 break;
             case "Both":
                 if (GUI.Button(buttonRect, "Show Slingshot"))
                 {
                     SwitchView("Slingshot");
+                    if (S.shotsLeft == 0)
+                    {
+                        GameOver();
+                        Invoke("StartLevel", 5f);
+                    }
                 }
                 break;
         }
@@ -157,10 +178,11 @@ public class MissionDemolition : MonoBehaviour
     public static void ShotFired()
     {
         S.shotsLeft--;
-        
-        if(S.shotsLeft == 0)
-        {
+    }
 
-        }
+    //print game over text on the screen
+    public static void GameOver()
+    {
+        S.gameOver.text = "LEVEL FAILED";
     }
 }
