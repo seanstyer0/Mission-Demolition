@@ -26,7 +26,6 @@ public class ProjectileLine : MonoBehaviour
         line.enabled = false;
         //initialize the points list
         points = new List<Vector3>();
-
     }
 
     //this is a property

@@ -12,7 +12,7 @@ public class CloudCrafter : MonoBehaviour
     public Vector3 cloudsPosMax;        //Max position of each cloud
     public float cloudScaleMin = 1;     //Min scale of each cloud
     public float cloudScaleMax = 5;     //Max scale of each cloud
-    public float cloudSpeedMult = 0.5f;  //adjust the speed of clouds
+    public float cloudSpeedMult = 0.15f;  //adjust the speed of clouds
 
     public bool ________________________;
 
@@ -65,6 +65,8 @@ public class CloudCrafter : MonoBehaviour
             Vector3 cPos = cloud.transform.position;
             //move larger clouds faster
             cPos.x -= scaleVal * Time.deltaTime * cloudSpeedMult;
+            //move closer clouds faster
+            cPos.x -= (1 - (cPos.z * 0.015f)) * Time.deltaTime * cloudSpeedMult;
             //if a cloud has moved too far to the left
             if (cPos.x <= cloudsPosMin.x)
             {
