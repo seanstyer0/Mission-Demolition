@@ -20,6 +20,7 @@ public class MissionDemolition : MonoBehaviour
     public GameObject[] castles;    //an array of the castle prefabs
     public Text gtLevel;            //the UI element for level progress
     public Text gtScore;            //the UI element for score
+    public Text gtHighScore;        //the UI element for high score
     public Text gameOver;           //the UI element to alert the player if they have lost the level
     public Vector3 castlePos;       //the place to put castles
 
@@ -56,7 +57,7 @@ public class MissionDemolition : MonoBehaviour
 
         //destroy any old projectiles
         GameObject[] gos = GameObject.FindGameObjectsWithTag("Projectile");
-        foreach(GameObject pTemp in gos)
+        foreach (GameObject pTemp in gos)
         {
             Destroy(pTemp);
         }
@@ -83,6 +84,70 @@ public class MissionDemolition : MonoBehaviour
         //show the data in the UI texts
         gtLevel.text = "Level: " + (level + 1) + " of " + levelMax;
         gtScore.text = "Shots Left: " + shotsLeft;
+        int highScore = -1;
+
+        switch (level)
+        {
+            case 0:
+                //If the LevelOneHighScore already exists, read it
+                if (PlayerPrefs.HasKey("LevelOneHighScore"))
+                {
+                    highScore = PlayerPrefs.GetInt("LevelOneHighScore");
+                }
+
+                //assign the high score to LevelOneHighScore
+                PlayerPrefs.SetInt("LevelOneHighScore", highScore);
+                //set the GUI label for high score
+                if (PlayerPrefs.GetInt("LevelOneHighScore") == -1)
+                {
+                    gtHighScore.text = "Level One High Score: " + " N/A";
+                }
+                else
+                {
+                    gtHighScore.text = "Level One High Score: " + highScore + " shot(s)";
+                }
+                break;
+
+            case 1:
+                //If the LevelTwoHighScore already exists, read it
+                if (PlayerPrefs.HasKey("LevelTwoHighScore"))
+                {
+                    highScore = PlayerPrefs.GetInt("LevelTwoHighScore");
+                }
+
+                //assign the high score to LevelTwoHighScore
+                PlayerPrefs.SetInt("LevelTwoHighScore", highScore);
+                //set the GUI label for high score
+                if (PlayerPrefs.GetInt("LevelTwoHighScore") == -1)
+                {
+                    gtHighScore.text = "Level Two High Score: " + " N/A";
+                }
+                else
+                {
+                    gtHighScore.text = "Level Two High Score: " + highScore + " shot(s)";
+                }
+                break;
+
+            case 2:
+                //If the LevelOneHighScore already exists, read it
+                if (PlayerPrefs.HasKey("LevelThreeHighScore"))
+                {
+                    highScore = PlayerPrefs.GetInt("LevelThreeHighScore");
+                }
+
+                //assign the high score to LevelOneHighScore
+                PlayerPrefs.SetInt("LevelThreeHighScore", highScore);
+                //set the gui label for high score
+                if (PlayerPrefs.GetInt("LevelThreeHighScore") == -1)
+                {
+                    gtHighScore.text = "Level Three High Score: " + " N/A";
+                }
+                else
+                {
+                    gtHighScore.text = "Level Three High Score: " + highScore + " shot(s)";
+                }
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -91,7 +156,7 @@ public class MissionDemolition : MonoBehaviour
         ShowGT();
 
         //check for level end
-        if(mode == GameMode.playing && Goal.goalMet)
+        if (mode == GameMode.playing && Goal.goalMet)
         {
             //change mode to stop checking for level end
             mode = GameMode.levelEnd;
@@ -104,8 +169,9 @@ public class MissionDemolition : MonoBehaviour
 
     void NextLevel()
     {
+        CheckScore(shotsLeft);
         level++;
-        if(level == levelMax)
+        if (level == levelMax)
         {
             level = 0;
         }
@@ -120,11 +186,11 @@ public class MissionDemolition : MonoBehaviour
         switch (showing)
         {
             case "Slingshot":
-                if(GUI.Button(buttonRect, "Show Castle"))
+                if (GUI.Button(buttonRect, "Show Castle"))
                 {
                     SwitchView("Castle");
                     //make sure the player hasn't already lost
-                    if(S.shotsLeft == 0)
+                    if (S.shotsLeft == 0)
                     {
                         GameOver();
                         Invoke("StartLevel", 5f);
@@ -184,5 +250,38 @@ public class MissionDemolition : MonoBehaviour
     public static void GameOver()
     {
         S.gameOver.text = "LEVEL FAILED";
+    }
+
+    public static void CheckScore(int leftoverShots)
+    {
+        switch (S.level)
+        {
+            case 0:
+                print("shots left: " + leftoverShots);
+                //If the LevelOneHighScore already exists, read it
+                if (leftoverShots > PlayerPrefs.GetInt("LevelOneHighScore"))
+                {
+                    PlayerPrefs.SetInt("LevelOneHighScore", 3 - leftoverShots);
+                }
+                break;
+
+            case 1:
+                print("shots left: " + leftoverShots);
+                //If the LevelTwoHighScore already exists, read it
+                if (leftoverShots > PlayerPrefs.GetInt("LevelTwoHighScore"))
+                {
+                    PlayerPrefs.SetInt("LevelTwoHighScore", 3 - leftoverShots);
+                }
+                break;
+
+            case 2:
+                print("shots left: " + leftoverShots);
+                //If the LevelOneHighScore already exists, read it
+                if (leftoverShots > PlayerPrefs.GetInt("LevelThreeHighScore"))
+                {
+                    PlayerPrefs.SetInt("LevelThreeHighScore", 3- leftoverShots);
+                }
+                break;
+        }
     }
 }
